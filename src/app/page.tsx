@@ -10,6 +10,8 @@ export default async function Home() {
   await allSettled(someQuery.refresh, { scope });
   const values = serialize(scope);
 
+  console.log({ values });
+
   return (
     <EffectorNext values={values}>
       <div className="bg-orange-100 min-h-screen flex items-center flex-col">
