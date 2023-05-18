@@ -34,6 +34,9 @@ const attachedFx = attach({
   },
 });
 
+/**
+ * Если передать эффект инлайново, то баг исчезает
+ */
 export const someQuery = createQuery({
   effect: attachedFx,
   contract: zodContract(z.string()),
