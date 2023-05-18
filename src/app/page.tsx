@@ -1,24 +1,29 @@
-"use client";
+import { EffectorNext } from "@effector/next";
+import { allSettled, fork, serialize } from "effector";
+import { Suspense } from "react";
+import { Counter } from "./_components/counter";
+import { ServerCounter } from "./_components/server_counter";
+import { someQuery } from "./model";
 
-import { useUnit } from "effector-react";
-import { $count, incremented } from "./model";
+export default async function Home() {
+  const scope = fork();
+  await allSettled(someQuery.refresh, { scope });
+  const values = serialize(scope);
 
-export default function Home() {
-  const [count, inc] = useUnit([$count, incremented]);
+  console.log(values);
+
   return (
-    <div className="bg-orange-100 min-h-screen flex items-center flex-col">
-      <h1 className="text-orange-400 text-center text-2xl pt-10 font-bold">
-        SWC Plugin
-      </h1>
-      <div className="flex mt-4 items-center gap-x-4">
-        <p className="text-center">Count: {count}</p>
-        <button
-          onClick={inc}
-          className="px-4 py-1 rounded bg-orange-500 text-white text-sm"
-        >
-          +
-        </button>
+    <EffectorNext values={values}>
+      <div className="bg-orange-100 min-h-screen flex items-center flex-col">
+        <h1 className="text-orange-400 text-center text-2xl pt-10 font-bold">
+          SWC Plugin
+        </h1>
+        <Counter />
+        <Suspense fallback={<div>Loading server counter...</div>}>
+          {/* @ts-expect-error: RSC */}
+          <ServerCounter />
+        </Suspense>
       </div>
-    </div>
+    </EffectorNext>
   );
 }

@@ -1,7 +1,14 @@
 import { createCounter } from "@/shared/factories/create_counter";
-import { attachOperation, createQuery } from "@farfetched/core";
-import { createEvent, createStore, sample } from "effector";
-import { snapshot } from "patronum";
+import { createQuery } from "@farfetched/core";
+import { zodContract } from "@farfetched/zod";
+import {
+  attach,
+  createEffect,
+  createEvent,
+  createStore,
+  sample,
+} from "effector";
+import { z } from "zod";
 
 export const $count = createStore(10);
 
@@ -14,25 +21,22 @@ sample({
   target: $count,
 });
 
-export const q1 = createQuery({
-  handler: async () => "foo",
-  name: "query-1",
+const baseFx = createEffect(async () => {
+  await new Promise((r) => setTimeout(r, 500));
+  return "foo-base";
 });
 
-export const q2 = createQuery({
-  handler: async () => "foo",
-  name: "query-2",
+const attachedFx = attach({
+  source: $count,
+  effect: async (count) => {
+    await new Promise((r) => setTimeout(r, 500));
+    return "foo-" + count;
+  },
 });
 
-export const q3 = attachOperation(q1);
+export const someQuery = createQuery({
+  effect: attachedFx,
+  contract: zodContract(z.string()),
+});
 
-export const $snap1 = snapshot({ source: $count });
-export const $snap2 = snapshot({ source: $count });
-
-export const c1 = createCounter({ initialCount: 10 });
-export const c2 = createCounter();
-
-console.log($count.sid);
-console.log("queries sids: ", q1.$data.sid, q2.$data.sid, q3.$data.sid);
-console.log("snapshot sids: ", $snap1.sid, $snap2.sid);
-console.log("factory sids: ", c1.$count.sid, c2.$count.sid);
+export const counter = createCounter({ initialCount: 10 });
