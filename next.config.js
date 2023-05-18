@@ -1,4 +1,8 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {}
+const nextConfig = {
+  experimental: {
+    swcPlugins: [["@effector/swc-plugin", {}]],
+  },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
