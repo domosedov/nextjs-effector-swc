@@ -9,6 +9,7 @@ const nextConfig = {
             "patronum",
             "@effector/reflect",
             "@farfetched/core",
+            "@farfetched/zod",
             "@withease/web-api",
             "@/shared/factories/create_counter",
           ],

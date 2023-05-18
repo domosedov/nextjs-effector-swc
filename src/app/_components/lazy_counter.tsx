@@ -1,10 +1,10 @@
 "use client";
 
 import { useUnit } from "effector-react";
-import { counter } from "../model";
+import { serverCounter } from "../model";
 
 export const LazyCounter = () => {
-  const { count, increment } = useUnit(counter);
+  const { count, increment } = useUnit(serverCounter);
 
   return (
     <div className="border p-4 bg-white">
